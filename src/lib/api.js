@@ -1,5 +1,4 @@
-const BASE_URL = 'https://cbt-tes.vercel.app'
-
+const BASE_URL = ''
 function getToken(role = 'student') {
   return localStorage.getItem(role === 'admin' ? 'cbt_admin_token' : 'cbt_student_token')
 }
