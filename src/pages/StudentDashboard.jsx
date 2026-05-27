@@ -109,6 +109,21 @@ export default function StudentDashboard() {
                   Mulai <ChevronRight size={14} />
                 </Link>
               )}
+              {task.status === 'in_progress' && (
+                <Link to={`/exam/${task.assignmentId}`} className="neo-btn" style={{
+                  padding: '8px 14px',
+                  fontSize: '0.78rem',
+                  background: 'var(--accent-yellow)',
+                  border: '2px solid var(--border)',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  boxShadow: '2px 2px 0 var(--border)',
+                }}>
+                  ▶ Lanjutkan
+                </Link>
+              )}
             </div>
           </div>
         ))}
