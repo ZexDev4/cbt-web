@@ -174,22 +174,25 @@ export default function AdminAssignments() {
                   <button className="neo-btn neo-btn-ghost" onClick={() => openRecap(a)} style={{ padding: '7px 12px', fontSize: '0.75rem' }}>
                     <Eye size={14} /> Rekap
                   </button>
-                  <button className="neo-btn neo-btn-danger" onClick={() => handleDelete(a._id)} style={{ padding: '7px 12px', fontSize: '0.75rem' }}>
-                    <Trash2 size={14} />
-                  </button>
+
                   <button className="neo-btn neo-btn-ghost" onClick={() => setExpanded(expanded === a._id ? null : a._id)} style={{ padding: '7px 10px', fontSize: '0.75rem' }}>
                     {expanded === a._id ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </button>
                 </div>
               </div>
               {expanded === a._id && (
-                <div style={{ borderTop: '2px dashed #e0e0e0', padding: '14px 20px', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: 24, flexWrap: 'wrap', fontWeight: 700 }}>
-                  <span>📅 Mulai: {formatDate(a.startAt)}</span>
-                  <span>🏁 Berakhir: {formatDate(a.endAt)}</span>
-                  <span>🎯 KKM: {a.passingScore}%</span>
-                  <span>🔀 Acak: {a.shuffleQuestions ? 'Ya' : 'Tidak'}</span>
-                  <span>👁 Tampil Hasil: {a.showResult ? 'Ya' : 'Tidak'}</span>
-                  <span>🔄 Max Attempt: {a.maxAttempts}</span>
+                <div style={{ borderTop: '2px dashed #e0e0e0', padding: '14px 20px', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: 24, flexWrap: 'wrap', fontWeight: 700, alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
+                    <span>📅 Mulai: {formatDate(a.startAt)}</span>
+                    <span>🏁 Berakhir: {formatDate(a.endAt)}</span>
+                    <span>🎯 KKM: {a.passingScore}%</span>
+                    <span>🔀 Acak: {a.shuffleQuestions ? 'Ya' : 'Tidak'}</span>
+                    <span>👁 Tampil Hasil: {a.showResult ? 'Ya' : 'Tidak'}</span>
+                    <span>🔄 Max Attempt: {a.maxAttempts}</span>
+                  </div>
+                  <button className="neo-btn neo-btn-danger" onClick={() => handleDelete(a._id)} style={{ padding: '6px 12px', fontSize: '0.75rem', marginLeft: 'auto' }}>
+                    <Trash2 size={14} /> Hapus Ujian
+                  </button>
                 </div>
               )}
             </div>
