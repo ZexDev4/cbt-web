@@ -632,6 +632,24 @@ html, body {
   max-width: 500px;
   width: 100%;
   animation: fadeUp 0.25s ease;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 600px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .modal-box {
+    box-shadow: 0 -4px 0 var(--border);
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: none;
+    padding: 20px 16px 24px;
+    max-height: 92vh;
+    width: 100%;
+  }
 }
 
 /* Section header */
