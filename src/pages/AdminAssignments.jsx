@@ -155,17 +155,21 @@ export default function AdminAssignments() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map(a => (
             <div key={a._id} className="neo-card">
-              <div style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-                <div style={{ flex: 1, minWidth: 200 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 6 }}>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '0.95rem' }}>{a.title}</h3>
-                    <StatusBadge status={a.status} />
+              <div style={{ padding: '16px 20px' }}>
+                {/* Title + status row */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10, marginBottom: 8 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
+                      <h3 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '0.95rem', wordBreak: 'break-word' }}>{a.title}</h3>
+                      <StatusBadge status={a.status} />
+                    </div>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>
+                      {a.classRooms?.map(c => c.name).join(', ')} · {a.duration} menit · {a.totalPoints} poin · s/d {formatDate(a.endAt)}
+                    </p>
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>
-                    {a.classRooms?.map(c => c.name).join(', ')} · {a.duration} menit · {a.totalPoints} poin · s/d {formatDate(a.endAt)}
-                  </p>
                 </div>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {/* Action buttons row — scrollable on mobile */}
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
                   {a.status === 'draft' && (
                     <button className="neo-btn neo-btn-green" onClick={() => handlePublish(a._id)} style={{ padding: '7px 12px', fontSize: '0.75rem' }}>
                       <Globe size={14} /> Publish
@@ -183,13 +187,13 @@ export default function AdminAssignments() {
                 </div>
               </div>
               {expanded === a._id && (
-                <div style={{ borderTop: '2px dashed #e0e0e0', padding: '14px 20px', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: 24, flexWrap: 'wrap', fontWeight: 700 }}>
+                <div style={{ borderTop: '2px dashed #e0e0e0', padding: '14px 20px', display: 'flex', gap: 12, flexWrap: 'wrap', fontWeight: 700, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                   <span>📅 Mulai: {formatDate(a.startAt)}</span>
                   <span>🏁 Berakhir: {formatDate(a.endAt)}</span>
                   <span>🎯 KKM: {a.passingScore}%</span>
                   <span>🔀 Acak: {a.shuffleQuestions ? 'Ya' : 'Tidak'}</span>
-                  <span>👁 Tampil Hasil: {a.showResult ? 'Ya' : 'Tidak'}</span>
-                  <span>🔄 Max Attempt: {a.maxAttempts}</span>
+                  <span>👁 Hasil: {a.showResult ? 'Ya' : 'Tidak'}</span>
+                  <span>🔄 Max: {a.maxAttempts}x</span>
                 </div>
               )}
             </div>
@@ -199,14 +203,18 @@ export default function AdminAssignments() {
 
       {/* Create Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Buat Ujian Baru">
-        <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: 4 }}>
+        <div style={{ maxHeight: '75vh', overflowY: 'auto', paddingRight: 2 }}>
           {error && <Alert type="error">{error}</Alert>}
           <form onSubmit={handleCreate}>
+
+            {/* Judul */}
             <div className="form-group">
               <label className="form-label">Judul Ujian</label>
               <input className="neo-input" value={form.title} onChange={e => updateForm('title', e.target.value)} placeholder="UTS Matematika..." required />
             </div>
-            <div className="grid-2">
+
+            {/* Durasi + KKM */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <div className="form-group">
                 <label className="form-label">Durasi (menit)</label>
                 <input className="neo-input" type="number" value={form.duration} onChange={e => updateForm('duration', e.target.value)} min={5} required />
@@ -216,28 +224,33 @@ export default function AdminAssignments() {
                 <input className="neo-input" type="number" value={form.passingScore} onChange={e => updateForm('passingScore', e.target.value)} min={0} max={100} required />
               </div>
             </div>
-            <div className="grid-2">
+
+            {/* Tanggal — stack di mobile */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
               <div className="form-group">
                 <label className="form-label">Mulai</label>
-                <input className="neo-input" type="datetime-local" value={form.startAt} onChange={e => updateForm('startAt', e.target.value)} required />
+                <input className="neo-input" type="datetime-local" value={form.startAt} onChange={e => updateForm('startAt', e.target.value)} required style={{ fontSize: '0.82rem' }} />
               </div>
               <div className="form-group">
                 <label className="form-label">Selesai</label>
-                <input className="neo-input" type="datetime-local" value={form.endAt} onChange={e => updateForm('endAt', e.target.value)} required />
+                <input className="neo-input" type="datetime-local" value={form.endAt} onChange={e => updateForm('endAt', e.target.value)} required style={{ fontSize: '0.82rem' }} />
               </div>
             </div>
+
+            {/* Kelas */}
             <div className="form-group">
               <label className="form-label">Kelas</label>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, border: '2px solid var(--border)', borderRadius: 4, padding: 10 }}>
                 {classes.map(c => (
-                  <label key={c._id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer' }}>
+                  <label key={c._id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.82rem', fontWeight: 700, cursor: 'pointer', padding: '4px 8px', border: '2px solid var(--border)', borderRadius: 4, background: form.classRoomIds.includes(c._id) ? 'var(--accent-yellow)' : 'var(--card)' }}>
                     <input type="checkbox"
                       checked={form.classRoomIds.includes(c._id)}
                       onChange={e => {
                         updateForm('classRoomIds', e.target.checked
                           ? [...form.classRoomIds, c._id]
                           : form.classRoomIds.filter(x => x !== c._id))
-                      }} />
+                      }}
+                      style={{ display: 'none' }} />
                     {c.name}
                   </label>
                 ))}
@@ -245,48 +258,59 @@ export default function AdminAssignments() {
             </div>
 
             {/* Questions */}
-            <div style={{ marginTop: 8, marginBottom: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                <p style={{ fontWeight: 700, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Soal ({form.questions.length})</p>
-                <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ marginTop: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
+                <p style={{ fontWeight: 700, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Soal ({form.questions.length})
+                </p>
+                <div style={{ display: 'flex', gap: 6 }}>
                   <button type="button" className="neo-btn neo-btn-dark" onClick={() => addQuestion('multiple_choice')} style={{ padding: '5px 10px', fontSize: '0.72rem' }}>
-                    + Pilihan Ganda
+                    + PG
                   </button>
                   <button type="button" className="neo-btn neo-btn-ghost" onClick={() => addQuestion('essay')} style={{ padding: '5px 10px', fontSize: '0.72rem' }}>
                     + Essay
                   </button>
                 </div>
               </div>
+
               {form.questions.map((q, i) => (
-                <div key={i} style={{ border: '2px solid var(--border)', borderRadius: 4, padding: 14, marginBottom: 12, background: 'var(--bg)' }}>
+                <div key={i} style={{ border: '2px solid var(--border)', borderRadius: 4, padding: 12, marginBottom: 12, background: 'var(--bg)' }}>
+                  {/* Soal header */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <span style={{ fontWeight: 700, fontSize: '0.78rem', background: q.type === 'essay' ? '#e0e0e0' : 'var(--accent-yellow)', border: '2px solid var(--border)', borderRadius: 2, padding: '3px 8px' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.75rem', background: q.type === 'essay' ? '#e0e0e0' : 'var(--accent-yellow)', border: '2px solid var(--border)', borderRadius: 2, padding: '3px 8px' }}>
                       {i + 1}. {q.type === 'essay' ? 'Essay' : 'Pilihan Ganda'}
                     </span>
                     <button type="button" onClick={() => removeQuestion(i)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cc0000' }}>
                       <X size={16} />
                     </button>
                   </div>
+
+                  {/* Pertanyaan */}
                   <textarea className="neo-input" rows={2} placeholder="Pertanyaan..." value={q.content}
                     onChange={e => updateQuestion(i, 'content', e.target.value)} required
-                    style={{ marginBottom: 8, fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }} />
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)' }}>Poin:</label>
+                    style={{ marginBottom: 8, fontFamily: 'var(--font-mono)', fontSize: '0.82rem', width: '100%', boxSizing: 'border-box' }} />
+
+                  {/* Poin */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Poin:</label>
                     <input className="neo-input" type="number" value={q.points} min={1}
                       onChange={e => updateQuestion(i, 'points', Number(e.target.value))}
                       style={{ width: 70 }} />
                   </div>
+
+                  {/* Pilihan ganda */}
                   {q.type === 'multiple_choice' && (
                     <>
                       {q.choices.map((c, ci) => (
                         <div key={c.key} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                           <span style={{ width: 24, height: 24, border: '2px solid var(--border)', borderRadius: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.75rem', flexShrink: 0, background: 'var(--card)' }}>{c.key}</span>
                           <input className="neo-input" placeholder={`Pilihan ${c.key}`} value={c.text}
-                            onChange={e => updateChoice(i, ci, e.target.value)} />
+                            onChange={e => updateChoice(i, ci, e.target.value)}
+                            style={{ flex: 1, minWidth: 0 }} />
                         </div>
                       ))}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)' }}>Jawaban Benar:</label>
+                        <label style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>Jawaban:</label>
                         <select className="neo-input" value={q.correctKey} onChange={e => updateQuestion(i, 'correctKey', e.target.value)} style={{ width: 80 }}>
                           {q.choices.map(c => <option key={c.key} value={c.key}>{c.key}</option>)}
                         </select>
@@ -308,20 +332,21 @@ export default function AdminAssignments() {
       <Modal open={!!recapModal} onClose={() => { setRecapModal(null); setRecap(null) }} title={`Rekap: ${recapModal?.title || ''}`}>
         {!recap ? <Loader /> : recap.error ? <Alert type="error">{recap.error}</Alert> : (
           <div>
-            <div className="grid-3" style={{ marginBottom: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
               {[
                 { label: 'Submission', value: recap.summary?.totalSubmissions ?? 0 },
                 { label: 'Rata-rata', value: `${recap.summary?.averageScore ?? 0}%` },
                 { label: 'Lulus', value: `${recap.summary?.passRate ?? 0}%` },
               ].map(({ label, value }) => (
-                <div key={label} className="neo-card" style={{ padding: '12px 16px', textAlign: 'center' }}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.4rem' }}>{value}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>{label}</div>
+                <div key={label} className="neo-card" style={{ padding: '12px 10px', textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.3rem' }}>{value}</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>{label}</div>
                 </div>
               ))}
             </div>
-            <div style={{ maxHeight: 280, overflowY: 'auto' }}>
-              <table className="neo-table striped">
+            {/* Table scrollable on mobile */}
+            <div style={{ maxHeight: 280, overflowY: 'auto', overflowX: 'auto' }}>
+              <table className="neo-table striped" style={{ minWidth: 340 }}>
                 <thead>
                   <tr><th>Siswa</th><th>Kelas</th><th>Nilai</th><th>Status</th></tr>
                 </thead>
