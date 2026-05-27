@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { UserPlus, Eye, EyeOff, ArrowLeft, ChevronDown } from 'lucide-react'
-import { studentRegister, getClasses } from '../lib/api'
+import { UserPlus, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { studentRegister } from '../lib/api'
 import { Alert } from '../components/UI'
 
 export default function StudentRegister() {
@@ -10,14 +10,7 @@ export default function StudentRegister() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
-  const [classes, setClasses] = useState([])
   const navigate = useNavigate()
-
-  useEffect(() => {
-    getClasses()
-      .then(r => setClasses(r.data || []))
-      .catch(() => {})
-  }, [])
 
   function update(k, v) { setForm(p => ({ ...p, [k]: v })) }
 
@@ -66,8 +59,12 @@ export default function StudentRegister() {
             </div>
             <div className="form-group">
               <label className="form-label">Kode Kelas</label>
-              <input className="neo-input" type="text" placeholder="XI-A"
-                value={form.classCode} onChange={e => update('classCode', e.target.value)} required />
+              <select className="neo-input" value={form.classCode} onChange={e => update('classCode', e.target.value)} required>
+                <option value="">-- Pilih Kelas --</option>
+                {['A','B','C','D','E','F','G','H','I','J'].map(l => (
+                  <option key={l} value={`XI-${l}`}>XI-{l}</option>
+                ))}
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Password</label>
