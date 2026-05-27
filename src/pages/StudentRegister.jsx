@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { UserPlus, Eye, EyeOff, ArrowLeft } from 'lucide-react'
-import { studentRegister } from '../lib/api'
+import { UserPlus, Eye, EyeOff, ArrowLeft, ChevronDown } from 'lucide-react'
+import { studentRegister, getClasses } from '../lib/api'
 import { Alert } from '../components/UI'
 
 export default function StudentRegister() {
@@ -10,7 +10,14 @@ export default function StudentRegister() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [classes, setClasses] = useState([])
   const navigate = useNavigate()
+
+  useEffect(() => {
+    getClasses()
+      .then(r => setClasses(r.data || []))
+      .catch(() => {})
+  }, [])
 
   function update(k, v) { setForm(p => ({ ...p, [k]: v })) }
 
