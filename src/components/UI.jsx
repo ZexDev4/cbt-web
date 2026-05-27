@@ -35,12 +35,23 @@ export function Modal({ open, onClose, title, children }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-box" onClick={e => e.stopPropagation()}>
         {title && (
-          <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.2rem', marginBottom: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{
+            fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.1rem',
+            marginBottom: 16, display: 'flex', justifyContent: 'space-between',
+            alignItems: 'center', flexShrink: 0,
+            borderBottom: '2px dashed #e0e0e0', paddingBottom: 12,
+          }}>
             {title}
-            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-muted)' }}>✕</button>
+            <button onClick={onClose} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-muted)',
+              flexShrink: 0, marginLeft: 8,
+            }}>✕</button>
           </h2>
         )}
-        {children}
+        <div style={{ overflowY: 'auto', flex: 1, paddingRight: 2 }}>
+          {children}
+        </div>
       </div>
     </div>
   )
