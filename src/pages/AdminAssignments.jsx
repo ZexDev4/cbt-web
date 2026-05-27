@@ -181,18 +181,13 @@ export default function AdminAssignments() {
                 </div>
               </div>
               {expanded === a._id && (
-                <div style={{ borderTop: '2px dashed #e0e0e0', padding: '14px 20px', fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: 24, flexWrap: 'wrap', fontWeight: 700, alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-                    <span>📅 Mulai: {formatDate(a.startAt)}</span>
-                    <span>🏁 Berakhir: {formatDate(a.endAt)}</span>
-                    <span>🎯 KKM: {a.passingScore}%</span>
-                    <span>🔀 Acak: {a.shuffleQuestions ? 'Ya' : 'Tidak'}</span>
-                    <span>👁 Tampil Hasil: {a.showResult ? 'Ya' : 'Tidak'}</span>
-                    <span>🔄 Max Attempt: {a.maxAttempts}</span>
-                  </div>
-                  <button className="neo-btn neo-btn-danger" onClick={() => handleDelete(a._id)} style={{ padding: '6px 12px', fontSize: '0.75rem', marginLeft: 'auto' }}>
-                    <Trash2 size={14} /> Hapus Ujian
-                  </button>
+                <div style={{ borderTop: '2px dashed #e0e0e0', padding: '12px 16px', fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', gap: 12, flexWrap: 'wrap', fontWeight: 700 }}>
+                  <span>📅 Mulai: {formatDate(a.startAt)}</span>
+                  <span>🏁 Berakhir: {formatDate(a.endAt)}</span>
+                  <span>🎯 KKM: {a.passingScore}%</span>
+                  <span>🔀 Acak: {a.shuffleQuestions ? 'Ya' : 'Tidak'}</span>
+                  <span>👁 Hasil: {a.showResult ? 'Ya' : 'Tidak'}</span>
+                  <span>🔄 Max: {a.maxAttempts}x</span>
                 </div>
               )}
             </div>
@@ -202,7 +197,7 @@ export default function AdminAssignments() {
 
       {/* Create Modal */}
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Buat Ujian Baru">
-        <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: 4 }}>
+        <div>
           {error && <Alert type="error">{error}</Alert>}
           <form onSubmit={handleCreate}>
             <div className="form-group">
@@ -317,36 +312,38 @@ export default function AdminAssignments() {
                 { label: 'Rata-rata', value: `${recap.summary?.averageScore ?? 0}%` },
                 { label: 'Lulus', value: `${recap.summary?.passRate ?? 0}%` },
               ].map(({ label, value }) => (
-                <div key={label} className="neo-card" style={{ padding: '12px 16px', textAlign: 'center' }}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.4rem' }}>{value}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>{label}</div>
+                <div key={label} className="neo-card" style={{ padding: '10px 12px', textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.3rem' }}>{value}</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>{label}</div>
                 </div>
               ))}
             </div>
-            <div style={{ maxHeight: 280, overflowY: 'auto' }}>
-              <table className="neo-table striped">
-                <thead>
-                  <tr><th>Siswa</th><th>Kelas</th><th>Nilai</th><th>Status</th></tr>
-                </thead>
-                <tbody>
-                  {(recap.submissions || []).map(s => (
-                    <tr key={s.submissionId}>
-                      <td style={{ fontWeight: 700 }}>{s.student?.fullName}</td>
-                      <td style={{ fontSize: '0.78rem' }}>{s.student?.classRoom?.name}</td>
-                      <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700 }}>{s.percentScore}%</td>
-                      <td>
-                        <span style={{
-                          fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px',
-                          border: '2px solid var(--border)', borderRadius: 2,
-                          background: s.isPassed ? 'var(--accent-green)' : '#ffcccc',
-                        }}>
-                          {s.isPassed ? '✓ LULUS' : '✗ GAGAL'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {(recap.submissions || []).map(s => (
+                <div key={s.submissionId} style={{
+                  border: '2px solid var(--border)', borderRadius: 4,
+                  padding: '10px 14px', background: 'var(--bg)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
+                }}>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '0.85rem' }}>{s.student?.fullName}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>{s.student?.classRoom?.name}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '0.9rem' }}>{s.percentScore}%</span>
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px',
+                      border: '2px solid var(--border)', borderRadius: 2,
+                      background: s.isPassed ? 'var(--accent-green)' : '#ffcccc',
+                    }}>
+                      {s.isPassed ? '✓ LULUS' : '✗ GAGAL'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              {(recap.submissions || []).length === 0 && (
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontWeight: 700, padding: 24 }}>Belum ada submission</p>
+              )}
             </div>
           </div>
         )}
